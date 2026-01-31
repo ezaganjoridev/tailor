@@ -920,12 +920,46 @@ section {
 @media (max-width: 768px) {
     .nav-inner {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        padding-bottom: 0.75rem;
     }
 
     .nav-menu {
-        justify-content: flex-start;
-        gap: 1rem;
+        width: 100%;
+        justify-content: center;
+        gap: 0.8rem;
+        padding: 0.6rem 0.8rem;
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 999px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-menu li {
+        flex: 0 0 auto;
+    }
+
+    .nav-menu a {
+        font-size: 0.9rem;
+        padding: 0.35rem 0.2rem;
+        white-space: nowrap;
+    }
+
+    .nav-brand {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .brand-tag {
+        display: none;
     }
 
     .hero {
