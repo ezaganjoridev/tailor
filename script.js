@@ -1,311 +1,250 @@
 // Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const target = document.querySelector(this.getAttribute('href'));
+            if (!target) return;
+            e.preventDefault();
             target.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             });
-        }
+        });
     });
-});
+}
 
 // Form handling
-const contactForm = document.getElementById('contactForm');
-const formMessage = document.getElementById('formMessage');
+function initContactForm() {
+    const contactForm = document.getElementById('contactForm');
+    const formMessage = document.getElementById('formMessage');
+    if (!contactForm || !formMessage) return;
 
-contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Validate phone number (basic validation)
-    const phoneInput = document.getElementById('phone').value;
-    const phoneRegex = /^[\d\s\-\(\)]+$/;
-    if (!phoneRegex.test(phoneInput)) {
-        showMessage('Please enter a valid phone number.', 'error');
-        return;
-    }
-    
-    // Validate email
-    const emailInput = document.getElementById('email').value;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailInput)) {
-        showMessage('Please enter a valid email address.', 'error');
-        return;
-    }
-    
-    // Get form data
-    const formData = new FormData(contactForm);
-    
-    // Submit to Formspree using AJAX
-    fetch('https://formspree.io/f/mjgwglrw', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json'
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const phoneInput = document.getElementById('phone');
+        const emailInput = document.getElementById('email');
+        if (!phoneInput || !emailInput) return;
+
+        const phoneRegex = /^[\d\s\-\(\)]+$/;
+        if (!phoneRegex.test(phoneInput.value)) {
+            showMessage(formMessage, 'Please enter a valid phone number.', 'error');
+            return;
         }
-    })
-    .then(response => {
-        if (response.ok) {
-            showMessage('Thank you! Your message has been received. We\'ll contact you soon.', 'success');
-            contactForm.reset();
-        } else {
-            return response.json().then(data => {
-                if (data.errors) {
-                    showMessage('There was a problem with your submission. Please try again.', 'error');
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailInput.value)) {
+            showMessage(formMessage, 'Please enter a valid email address.', 'error');
+            return;
+        }
+
+        const formData = new FormData(contactForm);
+
+        fetch('https://formspree.io/f/mjgwglrw', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    showMessage(formMessage, 'Thank you! Your request has been received. We will contact you soon.', 'success');
+                    contactForm.reset();
                 } else {
-                    showMessage('Oops! There was a problem submitting your form.', 'error');
+                    return response.json().then(data => {
+                        if (data.errors) {
+                            showMessage(formMessage, 'There was a problem with your submission. Please try again.', 'error');
+                        } else {
+                            showMessage(formMessage, 'Oops! There was a problem submitting your form.', 'error');
+                        }
+                    });
                 }
+            })
+            .catch(() => {
+                showMessage(formMessage, 'Sorry, there was an error. Please try again or contact us directly.', 'error');
             });
-        }
-    })
-    .catch(error => {
-        showMessage('Sorry, there was an error. Please try again or contact us directly.', 'error');
-        console.error('Error:', error);
     });
-});
+}
 
-// Show message function
-function showMessage(message, type) {
-    formMessage.textContent = message;
-    formMessage.className = `form-message ${type}`;
-    formMessage.style.display = 'block';
-    
-    // Hide message after 5 seconds
+function showMessage(target, message, type) {
+    target.textContent = message;
+    target.className = `form-message ${type}`;
+    target.style.display = 'block';
+
     setTimeout(() => {
-        formMessage.style.display = 'none';
+        target.style.display = 'none';
     }, 5000);
 }
 
-// Store form submission in localStorage
-function storeFormSubmission(data) {
-    let submissions = JSON.parse(localStorage.getItem('tailorSubmissions') || '[]');
-    submissions.push(data);
-    localStorage.setItem('tailorSubmissions', JSON.stringify(submissions));
+// Navbar shadow on scroll
+function initNavbarShadow() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > 80) {
+            navbar.style.boxShadow = '0 12px 30px rgba(0,0,0,0.12)';
+        } else {
+            navbar.style.boxShadow = '0 8px 20px rgba(0,0,0,0.05)';
+        }
+    });
 }
-
-// Retrieve all submissions (for demo/testing purposes)
-function getSubmissions() {
-    return JSON.parse(localStorage.getItem('tailorSubmissions') || '[]');
-}
-
-// Add to window object so you can check submissions in console
-window.getFormSubmissions = getSubmissions;
-
-// Add scroll effect to navbar
-let lastScroll = 0;
-const navbar = document.querySelector('.navbar');
-
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll > 100) {
-        navbar.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
-    } else {
-        navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-    }
-    
-    lastScroll = currentScroll;
-});
 
 // Phone number formatting
-const phoneInput = document.getElementById('phone');
-phoneInput.addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
-    
-    if (value.length > 0) {
-        if (value.length <= 3) {
-            value = `(${value}`;
-        } else if (value.length <= 6) {
-            value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
-        } else {
-            value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+function initPhoneFormatting() {
+    const phoneInput = document.getElementById('phone');
+    if (!phoneInput) return;
+
+    phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+
+        if (value.length > 0) {
+            if (value.length <= 3) {
+                value = `(${value}`;
+            } else if (value.length <= 6) {
+                value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+            } else {
+                value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+            }
         }
+
+        e.target.value = value;
+    });
+}
+
+// Reveal animations
+function initRevealAnimations() {
+    const items = document.querySelectorAll('[data-reveal]');
+    if (!items.length) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (prefersReducedMotion.matches) {
+        items.forEach(item => item.classList.add('is-visible'));
+        return;
     }
-    
-    e.target.value = value;
-});
 
-// Animation on scroll
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
-};
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
 
-const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
+    items.forEach(item => observer.observe(item));
+}
 
-// Observe service cards and pricing cards
-document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.service-card, .pricing-card');
-    cards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
-    });
-    
-    // Initialize review carousel
-    initReviewCarousel();
-    
-    // Initialize star rating
-    initStarRating();
-    
-    // Initialize review form
-    initReviewForm();
-});
-
-// Review Carousel - Show 3 at a time, scroll 1 at a time
+// Review carousel
 function initReviewCarousel() {
     const slider = document.querySelector('.reviews-slider');
-    if (!slider) return;
-    
-    const reviews = slider.querySelectorAll('.review-card');
     const prevBtn = document.querySelector('.carousel-btn.prev');
     const nextBtn = document.querySelector('.carousel-btn.next');
-    
-    if (reviews.length === 0) return;
-    
-    const reviewsPerPage = 3;
-    let currentIndex = 0;
+    if (!slider) return;
+
+    const getCards = () => Array.from(slider.querySelectorAll('.review-card'));
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let autoScrollInterval;
-    
-    function showReviews(startIndex) {
-        // Hide all reviews
-        reviews.forEach(review => review.classList.remove('active'));
-        
-        // Show 3 reviews starting from startIndex
-        for (let i = 0; i < reviewsPerPage; i++) {
-            const index = (startIndex + i) % reviews.length;
-            reviews[index].classList.add('active');
+
+    const getScrollAmount = () => {
+        const cards = getCards();
+        if (!cards.length) return 0;
+        const gapValue = parseFloat(getComputedStyle(slider).gap || 0);
+        return cards[0].getBoundingClientRect().width + gapValue;
+    };
+
+    const scrollNext = () => {
+        const scrollAmount = getScrollAmount();
+        if (!scrollAmount) return;
+
+        const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+        const nextPosition = slider.scrollLeft + scrollAmount;
+        if (nextPosition >= maxScrollLeft - 5) {
+            slider.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
         }
-    }
-    
-    // Show first 3 reviews
-    showReviews(0);
-    
-    function nextReview() {
-        currentIndex = (currentIndex + 1) % reviews.length; // Scroll 1 at a time
-        showReviews(currentIndex);
-    }
-    
-    function prevReview() {
-        currentIndex = (currentIndex - 1 + reviews.length) % reviews.length; // Scroll 1 at a time
-        showReviews(currentIndex);
-    }
-    
-    // Button event listeners
-    nextBtn.addEventListener('click', () => {
-        nextReview();
-        resetAutoScroll();
-    });
-    prevBtn.addEventListener('click', () => {
-        prevReview();
-        resetAutoScroll();
-    });
-    
-    // Auto-advance carousel every 5 seconds
-    function startAutoScroll() {
-        autoScrollInterval = setInterval(nextReview, 5000);
-    }
-    
-    function resetAutoScroll() {
+    };
+
+    const scrollPrev = () => {
+        const scrollAmount = getScrollAmount();
+        if (!scrollAmount) return;
+
+        if (slider.scrollLeft <= 5) {
+            slider.scrollTo({ left: slider.scrollWidth, behavior: 'smooth' });
+        } else {
+            slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        }
+    };
+
+    const startAutoScroll = () => {
+        if (prefersReducedMotion.matches) return;
+        autoScrollInterval = setInterval(scrollNext, 6500);
+    };
+
+    const stopAutoScroll = () => {
         clearInterval(autoScrollInterval);
+    };
+
+    const resetAutoScroll = () => {
+        stopAutoScroll();
         startAutoScroll();
+    };
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            scrollPrev();
+            resetAutoScroll();
+        });
     }
-    
-    startAutoScroll();
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            scrollNext();
+            resetAutoScroll();
+        });
+    }
+
+    slider.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
-            prevReview();
+            scrollPrev();
             resetAutoScroll();
         }
         if (e.key === 'ArrowRight') {
-            nextReview();
+            scrollNext();
             resetAutoScroll();
         }
     });
-    
-    // Touch/Swipe support for mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    slider.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    
-    slider.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, { passive: true });
-    
-    function handleSwipe() {
-        const swipeThreshold = 50; // Minimum distance for swipe
-        const diff = touchStartX - touchEndX;
-        
-        if (Math.abs(diff) > swipeThreshold) {
-            if (diff > 0) {
-                // Swiped left - show next
-                nextReview();
-            } else {
-                // Swiped right - show previous
-                prevReview();
-            }
-            resetAutoScroll();
-        }
-    }
-    
-    // Return carousel object for dynamic updates
-    return {
-        addReview: function(reviewData) {
-            const newReview = createReviewCard(reviewData);
-            slider.appendChild(newReview);
-            // Refresh reviews list
-            const updatedReviews = slider.querySelectorAll('.review-card');
-            reviews = updatedReviews;
-        }
-    };
-}
 
-// Create a review card element from data
-function createReviewCard(data) {
-    const card = document.createElement('div');
-    card.className = 'review-card';
-    
-    const stars = '⭐'.repeat(data.rating);
-    
-    card.innerHTML = `
-        <div class="stars">${stars}</div>
-        <p class="review-text">"${data.review}"</p>
-        <div class="reviewer">
-            <strong>${data.name}</strong>
-            <span>${data.location}</span>
-        </div>
-    `;
-    
-    return card;
+    slider.addEventListener('mouseenter', stopAutoScroll);
+    slider.addEventListener('mouseleave', startAutoScroll);
+    slider.addEventListener('focusin', stopAutoScroll);
+    slider.addEventListener('focusout', startAutoScroll);
+
+    prefersReducedMotion.addEventListener('change', (event) => {
+        if (event.matches) {
+            stopAutoScroll();
+        } else {
+            startAutoScroll();
+        }
+    });
+
+    startAutoScroll();
 }
 
 // Star Rating System
 function initStarRating() {
     const stars = document.querySelectorAll('.star');
     const ratingInput = document.getElementById('rating');
-    
+    if (!stars.length || !ratingInput) return;
+
     stars.forEach(star => {
         star.addEventListener('click', function() {
             const rating = this.getAttribute('data-rating');
             ratingInput.value = rating;
-            
-            // Update star display
+
             stars.forEach(s => {
                 const starRating = s.getAttribute('data-rating');
                 if (starRating <= rating) {
@@ -317,32 +256,24 @@ function initStarRating() {
                 }
             });
         });
-        
-        // Hover effect
+
         star.addEventListener('mouseenter', function() {
             const rating = this.getAttribute('data-rating');
             stars.forEach(s => {
                 const starRating = s.getAttribute('data-rating');
-                if (starRating <= rating) {
-                    s.style.color = 'var(--gold)';
-                } else {
-                    s.style.color = '#ddd';
-                }
+                s.style.color = starRating <= rating ? 'var(--gold)' : '#ddd';
             });
         });
     });
-    
-    // Reset hover on mouse leave
+
     const starRating = document.querySelector('.star-rating');
+    if (!starRating) return;
+
     starRating.addEventListener('mouseleave', function() {
         const currentRating = ratingInput.value;
         stars.forEach(s => {
             const starRating = s.getAttribute('data-rating');
-            if (starRating <= currentRating) {
-                s.style.color = 'var(--gold)';
-            } else {
-                s.style.color = '#ddd';
-            }
+            s.style.color = starRating <= currentRating ? 'var(--gold)' : '#ddd';
         });
     });
 }
@@ -351,40 +282,33 @@ function initStarRating() {
 function initReviewForm() {
     const reviewForm = document.getElementById('reviewForm');
     const reviewMessage = document.getElementById('reviewMessage');
-    
+    if (!reviewForm || !reviewMessage) return;
+
     reviewForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const rating = document.getElementById('rating').value;
         const name = document.getElementById('reviewerName').value;
         const location = document.getElementById('reviewerLocation').value;
         const reviewText = document.getElementById('reviewText').value;
-        
-        // Validate rating
+
         if (rating === '0') {
-            showReviewMessage('Please select a star rating.', 'error');
+            showMessage(reviewMessage, 'Please select a star rating.', 'error');
             return;
         }
-        
-        // Create review data object
+
         const reviewData = {
-            rating: parseInt(rating),
+            rating: parseInt(rating, 10),
             name: name,
             location: location,
             review: reviewText,
             timestamp: new Date().toISOString()
         };
-        
-        // Store in localStorage (for demo)
+
         storeReview(reviewData);
-        
-        // Add review to carousel dynamically
         addReviewToCarousel(reviewData);
-        
-        // Show success message
-        showReviewMessage('Thank you for your review! It has been added to our reviews.', 'success');
-        
-        // Reset form
+        showMessage(reviewMessage, 'Thank you for your review! It has been added to our reviews.', 'success');
+
         reviewForm.reset();
         document.getElementById('rating').value = '0';
         document.querySelectorAll('.star').forEach(s => {
@@ -392,31 +316,36 @@ function initReviewForm() {
             s.textContent = '☆';
             s.style.color = '#ddd';
         });
-        
-        console.log('Review submitted:', reviewData);
     });
 }
 
-// Add new review to carousel
 function addReviewToCarousel(reviewData) {
     const slider = document.querySelector('.reviews-slider');
     if (!slider) return;
-    
+
     const newReview = createReviewCard(reviewData);
     slider.appendChild(newReview);
-    
-    console.log('New review added to carousel!');
+    slider.scrollTo({ left: slider.scrollWidth, behavior: 'smooth' });
 }
 
-function showReviewMessage(message, type) {
-    const reviewMessage = document.getElementById('reviewMessage');
-    reviewMessage.textContent = message;
-    reviewMessage.className = `form-message ${type}`;
-    reviewMessage.style.display = 'block';
-    
-    setTimeout(() => {
-        reviewMessage.style.display = 'none';
-    }, 5000);
+function createReviewCard(data) {
+    const card = document.createElement('div');
+    card.className = 'review-card';
+    card.setAttribute('data-reveal', '');
+    card.classList.add('is-visible');
+
+    const stars = '⭐'.repeat(data.rating);
+
+    card.innerHTML = `
+        <div class="stars">${stars}</div>
+        <p class="review-text">"${data.review}"</p>
+        <div class="reviewer">
+            <strong>${data.name}</strong>
+            <span>${data.location}</span>
+        </div>
+    `;
+
+    return card;
 }
 
 function storeReview(data) {
@@ -425,10 +354,18 @@ function storeReview(data) {
     localStorage.setItem('customerReviews', JSON.stringify(reviews));
 }
 
-// Get all customer reviews
 window.getCustomerReviews = function() {
     return JSON.parse(localStorage.getItem('customerReviews') || '[]');
 };
 
-console.log('🎉 Tailor website loaded successfully!');
-console.log('💡 To view form submissions, type: getFormSubmissions() in the console');
+// Init all
+window.addEventListener('DOMContentLoaded', () => {
+    initSmoothScroll();
+    initContactForm();
+    initNavbarShadow();
+    initPhoneFormatting();
+    initRevealAnimations();
+    initReviewCarousel();
+    initStarRating();
+    initReviewForm();
+});

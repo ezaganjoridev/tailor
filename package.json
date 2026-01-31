@@ -1,0 +1,10 @@
+{
+  "name": "yorkdale-tailoring",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static site for Yorkdale Tailoring Services.",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "start": "python3 -m http.server 8000"
+  }
+}
