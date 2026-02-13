@@ -139,20 +139,70 @@ function initSmoothScroll() {
     });
 }
 
+function initMobileMenu() {
+    const navbar = document.querySelector('.navbar');
+    const toggle = document.querySelector('.nav-toggle');
+    const menu = document.getElementById('navMenu');
+    if (!navbar || !toggle || !menu) return;
+
+    const mobileMedia = window.matchMedia('(max-width: 768px)');
+
+    const setMenuState = isOpen => {
+        navbar.classList.toggle('menu-open', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+        document.body.classList.toggle('nav-open', isOpen && mobileMedia.matches);
+    };
+
+    const closeMenu = () => setMenuState(false);
+
+    toggle.addEventListener('click', () => {
+        const isOpen = navbar.classList.contains('menu-open');
+        setMenuState(!isOpen);
+    });
+
+    menu.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', () => {
+            if (mobileMedia.matches) closeMenu();
+        });
+    });
+
+    document.addEventListener('click', event => {
+        if (!mobileMedia.matches) return;
+        if (!navbar.classList.contains('menu-open')) return;
+        if (navbar.contains(event.target)) return;
+        closeMenu();
+    });
+
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closeMenu();
+    });
+
+    onMediaQueryChange(mobileMedia, event => {
+        if (!event.matches) closeMenu();
+    });
+
+    window.addEventListener('resize', () => {
+        if (!mobileMedia.matches) closeMenu();
+    });
+
+    closeMenu();
+}
+
 function initActiveNavLink() {
     const links = Array.from(document.querySelectorAll('.nav-menu a[href^="#"]'));
     if (!links.length) return;
 
-    const observed = links
+    const sections = links
         .map(link => {
             const hash = link.getAttribute('href');
             const section = hash ? document.querySelector(hash) : null;
             if (!section) return null;
-            return { hash, section, link };
+            return { hash, section };
         })
         .filter(Boolean);
 
-    if (!observed.length) return;
+    if (!sections.length) return;
 
     const setActive = hash => {
         links.forEach(link => {
@@ -160,23 +210,58 @@ function initActiveNavLink() {
         });
     };
 
-    const observer = new IntersectionObserver(entries => {
-        const visible = entries
-            .filter(entry => entry.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+    const nav = document.querySelector('.navbar');
+    let rafPending = false;
 
-        if (!visible.length) return;
+    const syncActiveLink = () => {
+        const navHeight = nav ? nav.getBoundingClientRect().height : 0;
+        const hash = window.location.hash;
+        if (hash) {
+            const hashSection = document.querySelector(hash);
+            if (hashSection) {
+                const sectionRect = hashSection.getBoundingClientRect();
+                const withinViewportBand =
+                    sectionRect.top <= window.innerHeight * 0.6 &&
+                    sectionRect.bottom > navHeight;
 
-        const topVisible = visible[0];
-        const match = observed.find(item => item.section === topVisible.target);
-        if (match) setActive(match.hash);
-    }, {
-        rootMargin: '-40% 0px -45% 0px',
-        threshold: [0.15, 0.35, 0.6]
-    });
+                if (withinViewportBand) {
+                    setActive(hash);
+                    rafPending = false;
+                    return;
+                }
+            }
+        }
 
-    observed.forEach(item => observer.observe(item.section));
-    setActive(window.location.hash || observed[0].hash);
+        const marker = Math.max(navHeight + 24, window.innerHeight * 0.35);
+        let current = sections[0].hash;
+        let bestTop = Number.NEGATIVE_INFINITY;
+
+        sections.forEach(item => {
+            const top = item.section.getBoundingClientRect().top;
+            if (top <= marker && top > bestTop) {
+                bestTop = top;
+                current = item.hash;
+            }
+        });
+
+        setActive(current);
+        rafPending = false;
+    };
+
+    const onScroll = () => {
+        if (rafPending) return;
+        rafPending = true;
+        window.requestAnimationFrame(syncActiveLink);
+    };
+
+    syncActiveLink();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    window.addEventListener('load', onScroll);
+
+    if (window.location.hash) {
+        setActive(window.location.hash);
+    }
 }
 
 // Contact form handling.
@@ -660,6 +745,7 @@ window.getCustomerReviews = function getCustomerReviews() {
 window.addEventListener('DOMContentLoaded', () => {
     initCurrentYear();
     initSmoothScroll();
+    initMobileMenu();
     initActiveNavLink();
     initContactForm();
     initNavbarShadow();
