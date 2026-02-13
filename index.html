@@ -3,27 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Luxury tailoring and alterations for Yorkville, Forest Hill, and Midtown Toronto. Expert suit, dress, and bridal tailoring with 40+ years of craftsmanship. By appointment.">
+    <meta name="description" content="Luxury tailoring and alterations near Yorkdale Mall. Expert suit, dress, bridal, and designer garment fitting for Yorkville, Forest Hill, Midtown Toronto, and the GTA.">
     <meta name="keywords" content="Yorkville tailor, Forest Hill tailor, luxury tailoring Toronto, bespoke tailoring Toronto, suit alterations Yorkville, dress alterations Forest Hill, high end tailoring Toronto, bridal alterations Toronto, custom tailoring near Yorkdale">
     <meta name="author" content="Yorkdale Tailoring Services">
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="Yorkdale Tailoring | Luxury Tailoring for Yorkville & Forest Hill">
-    <meta property="og:description" content="Luxury tailoring and alterations for Yorkville, Forest Hill, and Midtown Toronto. Expert suit, dress, and bridal tailoring with 40+ years of craftsmanship. By appointment.">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta property="og:title" content="Yorkdale Tailoring | Luxury Alterations in Toronto">
+    <meta property="og:description" content="Luxury tailoring and alterations near Yorkdale Mall with expert fittings for suiting, bridal, and eveningwear.">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yorkdaletailor.ca/">
+    <meta property="og:site_name" content="Yorkdale Tailoring">
     <meta property="og:locale" content="en_CA">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Yorkdale Tailoring | Luxury Alterations in Toronto">
+    <meta name="twitter:description" content="Expert tailoring near Yorkdale Mall for suiting, bridal, and designer garments.">
     <meta name="theme-color" content="#1c1a17">
-    <title>Yorkdale Tailoring | Luxury Tailoring for Yorkville & Forest Hill</title>
+    <link rel="canonical" href="https://yorkdaletailor.ca/">
+    <title>Yorkdale Tailoring | Luxury Tailoring &amp; Alterations in Toronto</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "LocalBusiness",
+        "@type": "Tailor",
+        "@id": "https://yorkdaletailor.ca/#tailor",
         "name": "Yorkdale Tailoring",
-        "description": "Luxury tailoring and alterations serving Yorkville, Forest Hill, and Midtown Toronto.",
+        "url": "https://yorkdaletailor.ca/",
+        "description": "Luxury tailoring and alterations serving Yorkville, Forest Hill, Midtown Toronto, and the GTA.",
         "priceRange": "$$-$$$",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Toronto",
+            "addressRegion": "ON",
+            "addressCountry": "CA"
+        },
         "areaServed": [
             {"@type": "Place", "name": "Yorkville"},
             {"@type": "Place", "name": "Forest Hill"},
@@ -31,26 +46,59 @@
             {"@type": "City", "name": "Toronto"},
             {"@type": "Place", "name": "North York"}
         ],
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Toronto",
-            "addressRegion": "ON",
-            "addressCountry": "CA"
-        }
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "availableLanguage": ["English"]
+        },
+        "sameAs": ["https://yorkdaletailor.ca/"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Do I need an appointment?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, appointments are recommended to provide privacy and adequate fitting time, especially for suits and formalwear."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How long do alterations take?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Most standard alterations take 3 to 7 days depending on complexity, with rush options available."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can you work with luxury fabrics?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Wool, silk, cashmere, and designer garments are handled using couture techniques."
+                }
+            }
+        ]
     }
     </script>
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" aria-label="Primary navigation">
         <div class="container nav-inner">
-            <div class="nav-brand">
-                <span class="brand-mark">✂️</span>
-                <div>
-                    <div class="brand-name">Yorkdale Tailoring</div>
-                    <div class="brand-tag">Luxury Alterations Atelier</div>
-                </div>
-            </div>
+            <a class="nav-brand" href="#home" aria-label="Yorkdale Tailoring home">
+                <span class="brand-mark" aria-hidden="true">✂️</span>
+                <span>
+                    <span class="brand-name">Yorkdale Tailoring</span>
+                    <span class="brand-tag">Luxury Alterations Atelier</span>
+                </span>
+            </a>
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#services">Services</a></li>
@@ -63,6 +111,7 @@
             </ul>
         </div>
     </nav>
+    <main id="main-content">
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -70,7 +119,7 @@
         <div class="container hero-grid">
             <div class="hero-content">
                 <p class="eyebrow">Yorkville • Forest Hill • Midtown Toronto</p>
-                <h1 class="hero-title">Luxury Tailoring & Alterations</h1>
+                <h1 class="hero-title">Luxury Tailoring &amp; Alterations</h1>
                 <p class="hero-subtitle">Precision fitting for suits, dresses, and couture garments with 40+ years of craftsmanship.</p>
                 <p class="hero-text">By appointment for clients who expect discreet service, immaculate finishing, and a fit that feels bespoke.</p>
                 <div class="hero-actions">
@@ -115,37 +164,37 @@
 
             <div class="services-grid">
                 <div class="service-card" data-reveal>
-                    <div class="service-icon">👔</div>
+                    <div class="service-icon" aria-hidden="true">👔</div>
                     <h3>Suit Alterations</h3>
                     <p>Jackets, trousers, and waistcoats refined for structure, balance, and movement.</p>
                 </div>
 
                 <div class="service-card" data-reveal>
-                    <div class="service-icon">👗</div>
-                    <h3>Bridal & Evening</h3>
+                    <div class="service-icon" aria-hidden="true">👗</div>
+                    <h3>Bridal &amp; Evening</h3>
                     <p>Expert hemming, bodice reshaping, and delicate fabric handling for special occasions.</p>
                 </div>
 
                 <div class="service-card" data-reveal>
-                    <div class="service-icon">✨</div>
+                    <div class="service-icon" aria-hidden="true">✨</div>
                     <h3>Custom Tailoring</h3>
                     <p>Made-to-measure garments crafted to your proportions and style preferences.</p>
                 </div>
 
                 <div class="service-card" data-reveal>
-                    <div class="service-icon">🧥</div>
-                    <h3>Outerwear & Coats</h3>
+                    <div class="service-icon" aria-hidden="true">🧥</div>
+                    <h3>Outerwear &amp; Coats</h3>
                     <p>Reshaping, lining repair, and precision sleeve work for premium outerwear.</p>
                 </div>
 
                 <div class="service-card" data-reveal>
-                    <div class="service-icon">🧵</div>
-                    <h3>Repairs & Restorations</h3>
+                    <div class="service-icon" aria-hidden="true">🧵</div>
+                    <h3>Repairs &amp; Restorations</h3>
                     <p>Invisible mending, zipper replacements, and reweaving for cherished pieces.</p>
                 </div>
 
                 <div class="service-card" data-reveal>
-                    <div class="service-icon">📏</div>
+                    <div class="service-icon" aria-hidden="true">📏</div>
                     <h3>Precision Resizing</h3>
                     <p>Subtle adjustments to preserve the designer silhouette and fabric integrity.</p>
                 </div>
@@ -161,12 +210,12 @@
             <div class="process-grid">
                 <div class="process-step" data-reveal>
                     <span class="step-number">01</span>
-                    <h3>Consultation & Pinning</h3>
+                    <h3>Consultation &amp; Pinning</h3>
                     <p>We review the garment, map ideal proportions, and pin adjustments with precision.</p>
                 </div>
                 <div class="process-step" data-reveal>
                     <span class="step-number">02</span>
-                    <h3>Tailoring & Finish</h3>
+                    <h3>Tailoring &amp; Finish</h3>
                     <p>Work is completed in-house with hand finishing for clean, invisible seams.</p>
                 </div>
                 <div class="process-step" data-reveal>
@@ -197,7 +246,7 @@
                 </div>
 
                 <div class="pricing-card" data-reveal>
-                    <h3>Shirts & Dresses</h3>
+                    <h3>Shirts &amp; Dresses</h3>
                     <ul>
                         <li><span>Shirt sleeves</span><span>From $25</span></li>
                         <li><span>Shirt hem</span><span>From $20</span></li>
@@ -208,7 +257,7 @@
                 </div>
 
                 <div class="pricing-card" data-reveal>
-                    <h3>Suits & Formalwear</h3>
+                    <h3>Suits &amp; Formalwear</h3>
                     <ul>
                         <li><span>Suit jacket sleeves</span><span>From $55</span></li>
                         <li><span>Jacket waist suppression</span><span>From $35</span></li>
@@ -235,7 +284,7 @@
             <h2 class="section-title">About Yorkdale Tailoring</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <h3>High-End Tailoring for Yorkville & Forest Hill</h3>
+                    <h3>High-End Tailoring for Yorkville &amp; Forest Hill</h3>
                     <p>Yorkdale Tailoring brings decades of expert craftsmanship to clients across Yorkville, Forest Hill, and Midtown Toronto. We focus on precision fit, luxury fabrics, and discreet service for professionals, creatives, and bridal clients who demand exceptional results.</p>
 
                     <div class="about-highlight" data-reveal>
@@ -247,7 +296,7 @@
                         <span>Yorkville</span>
                         <span>Forest Hill</span>
                         <span>Rosedale</span>
-                        <span>Yonge & St. Clair</span>
+                        <span>Yonge &amp; St. Clair</span>
                         <span>North York</span>
                         <span>Downtown Toronto</span>
                         <span>Richmond Hill</span>
@@ -279,6 +328,10 @@
         <div class="container">
             <h2 class="section-title">What Our Customers Say</h2>
             <p class="section-subtitle">Tailoring trusted by clients across Yorkville, Forest Hill, and the GTA.</p>
+            <div class="reviews-summary" data-reveal>
+                <div class="stars reviews-summary-stars" data-rating="5" aria-label="5 out of 5 stars"></div>
+                <p><strong>Rated Excellent</strong> by clients across Toronto and the GTA.</p>
+            </div>
 
             <div class="reviews-carousel" role="region" aria-roledescription="carousel" aria-label="Customer reviews">
                 <button class="carousel-btn prev" aria-label="Previous review">&larr;</button>
@@ -452,35 +505,35 @@
             <div class="write-review-section">
                 <h3>Write a Review</h3>
                 <form id="reviewForm" class="review-form">
-                    <div class="star-rating">
-                        <span class="star" data-rating="1">☆</span>
-                        <span class="star" data-rating="2">☆</span>
-                        <span class="star" data-rating="3">☆</span>
-                        <span class="star" data-rating="4">☆</span>
-                        <span class="star" data-rating="5">☆</span>
+                    <div class="star-rating" role="radiogroup" aria-label="Rate your experience">
+                        <button type="button" class="star" data-rating="1" aria-label="1 star" aria-pressed="false"><img class="star-icon" src="assets/icons/star-outline.svg" alt="" aria-hidden="true"></button>
+                        <button type="button" class="star" data-rating="2" aria-label="2 stars" aria-pressed="false"><img class="star-icon" src="assets/icons/star-outline.svg" alt="" aria-hidden="true"></button>
+                        <button type="button" class="star" data-rating="3" aria-label="3 stars" aria-pressed="false"><img class="star-icon" src="assets/icons/star-outline.svg" alt="" aria-hidden="true"></button>
+                        <button type="button" class="star" data-rating="4" aria-label="4 stars" aria-pressed="false"><img class="star-icon" src="assets/icons/star-outline.svg" alt="" aria-hidden="true"></button>
+                        <button type="button" class="star" data-rating="5" aria-label="5 stars" aria-pressed="false"><img class="star-icon" src="assets/icons/star-outline.svg" alt="" aria-hidden="true"></button>
                         <input type="hidden" id="rating" name="rating" value="0" required>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label for="reviewerName">Your Name *</label>
-                            <input type="text" id="reviewerName" name="reviewerName" required placeholder="Enter your name">
+                            <input type="text" id="reviewerName" name="reviewerName" required maxlength="60" autocomplete="name" placeholder="Enter your name">
                         </div>
 
                         <div class="form-group">
                             <label for="reviewerLocation">Location *</label>
-                            <input type="text" id="reviewerLocation" name="reviewerLocation" required placeholder="e.g., Yorkville">
+                            <input type="text" id="reviewerLocation" name="reviewerLocation" required maxlength="80" autocomplete="address-level2" placeholder="e.g., Yorkville">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="reviewText">Your Review *</label>
-                        <textarea id="reviewText" name="reviewText" rows="5" required placeholder="Share your experience with Yorkdale Tailoring..."></textarea>
+                        <textarea id="reviewText" name="reviewText" rows="5" required maxlength="700" placeholder="Share your experience with Yorkdale Tailoring..."></textarea>
                     </div>
 
                     <button type="submit" class="submit-button">Submit Review</button>
 
-                    <div id="reviewMessage" class="form-message"></div>
+                    <div id="reviewMessage" class="form-message" role="status" aria-live="polite"></div>
                 </form>
             </div>
         </div>
@@ -522,31 +575,32 @@
                 <form id="contactForm" action="https://formspree.io/f/mjgwglrw" method="POST" class="contact-form">
                     <div class="form-group">
                         <label for="fullName">Full Name *</label>
-                        <input type="text" id="fullName" name="name" required placeholder="Enter your full name">
+                        <input type="text" id="fullName" name="name" required autocomplete="name" placeholder="Enter your full name">
                     </div>
 
                     <div class="form-group">
                         <label for="phone">Phone Number *</label>
-                        <input type="tel" id="phone" name="phone" required placeholder="(416) 123-4567">
+                        <input type="tel" id="phone" name="phone" required inputmode="tel" autocomplete="tel" minlength="10" maxlength="20" pattern="[\d\s\-\(\)\+]{10,20}" placeholder="(416) 123-4567">
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email *</label>
-                        <input type="email" id="email" name="_replyto" required placeholder="your.email@example.com">
+                        <input type="email" id="email" name="_replyto" required autocomplete="email" placeholder="your.email@example.com">
                     </div>
 
                     <div class="form-group">
                         <label for="message">Message / Service Details *</label>
-                        <textarea id="message" name="message" rows="6" required placeholder="Please describe the services you're interested in (e.g., suit alterations, dress hemming, bridal fitting)."></textarea>
+                        <textarea id="message" name="message" rows="6" required maxlength="1200" placeholder="Please describe the services you're interested in (e.g., suit alterations, dress hemming, bridal fitting)."></textarea>
                     </div>
 
+                    <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
                     <button type="submit" class="submit-button">Send Request</button>
 
-                    <div id="formMessage" class="form-message"></div>
+                    <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
                 </form>
 
                 <div class="contact-info" data-reveal>
-                    <h3>Visit & Service Area</h3>
+                    <h3>Visit &amp; Service Area</h3>
                     <p><strong>📍 Near Yorkdale Mall</strong><br>
                     Serving Yorkville, Forest Hill, Midtown Toronto, and the GTA</p>
 
@@ -559,11 +613,12 @@
             </div>
         </div>
     </section>
+    </main>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 Yorkdale Tailoring Services. All rights reserved.</p>
+            <p>&copy; <span id="currentYear">2026</span> Yorkdale Tailoring Services. All rights reserved.</p>
             <p>Luxury tailoring near Yorkdale Mall, serving Yorkville, Forest Hill, and the GTA.</p>
         </div>
     </footer>
