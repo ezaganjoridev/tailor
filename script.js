@@ -204,7 +204,11 @@ function initActiveNavLink() {
 
     if (!sections.length) return;
 
+    let lastActive = null;
+
     const setActive = hash => {
+        if (hash === lastActive) return;          // skip if already active
+        lastActive = hash;
         links.forEach(link => {
             link.classList.toggle('is-active', link.getAttribute('href') === hash);
         });
@@ -215,22 +219,6 @@ function initActiveNavLink() {
 
     const syncActiveLink = () => {
         const navHeight = nav ? nav.getBoundingClientRect().height : 0;
-        const hash = window.location.hash;
-        if (hash) {
-            const hashSection = document.querySelector(hash);
-            if (hashSection) {
-                const sectionRect = hashSection.getBoundingClientRect();
-                const withinViewportBand =
-                    sectionRect.top <= window.innerHeight * 0.6 &&
-                    sectionRect.bottom > navHeight;
-
-                if (withinViewportBand) {
-                    setActive(hash);
-                    rafPending = false;
-                    return;
-                }
-            }
-        }
 
         const marker = Math.max(navHeight + 24, window.innerHeight * 0.35);
         let current = sections[0].hash;
@@ -328,8 +316,18 @@ function initNavbarShadow() {
     if (!navbar) return;
 
     let ticking = false;
+    let isScrolled = false;
+
     const updateNavbarShadow = () => {
-        navbar.classList.toggle('is-scrolled', window.scrollY > 80);
+        const y = window.scrollY;
+        // Hysteresis: scroll down past 80 to add, scroll up past 40 to remove
+        if (!isScrolled && y > 80) {
+            isScrolled = true;
+            navbar.classList.add('is-scrolled');
+        } else if (isScrolled && y < 40) {
+            isScrolled = false;
+            navbar.classList.remove('is-scrolled');
+        }
         ticking = false;
     };
 
@@ -375,13 +373,23 @@ function initPhoneFormatting() {
     });
 }
 
-// Reveal animations with subtle stagger.
+// Reveal animations with stagger per section.
 function initRevealAnimations() {
     const items = Array.from(document.querySelectorAll('[data-reveal]'));
     if (!items.length) return;
 
-    items.forEach((item, index) => {
-        item.style.setProperty('--reveal-delay', `${(index % 8) * 55}ms`);
+    // Group items by parent section for better per-section stagger
+    const sections = new Map();
+    items.forEach(item => {
+        const section = item.closest('section') || item.parentElement;
+        if (!sections.has(section)) sections.set(section, []);
+        sections.get(section).push(item);
+    });
+
+    sections.forEach(sectionItems => {
+        sectionItems.forEach((item, index) => {
+            item.style.setProperty('--reveal-delay', `${index * 80}ms`);
+        });
     });
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -742,6 +750,193 @@ window.getCustomerReviews = function getCustomerReviews() {
     return parseStoredReviews();
 };
 
+// ═══════════════════════════════════════════════
+// SCISSORS SCROLL PROGRESS BAR
+// ═══════════════════════════════════════════════
+function initScrollProgress() {
+    const fill = document.querySelector('.scroll-progress-fill');
+    const scissors = document.querySelector('.scroll-scissors');
+    const bar = document.querySelector('.scroll-progress');
+    if (!fill) return;
+
+    let ticking = false;
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+
+    // Position bar just below the navbar on desktop
+    const navbar = document.querySelector('.navbar');
+    const positionBar = () => {
+        if (!mobileQuery.matches && navbar && bar) {
+            bar.style.top = navbar.offsetHeight + 'px';
+        } else if (bar) {
+            bar.style.top = '0';
+        }
+    };
+
+    const updateProgress = () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min(1, scrollTop / docHeight) : 0;
+        const pct = progress * 100;
+
+        positionBar();
+
+        if (mobileQuery.matches) {
+            // Mobile: vertical left-side bar
+            fill.style.width = '';
+            fill.style.height = `${pct}%`;
+            if (scissors) {
+                scissors.style.transform = `translateX(-50%) rotate(${90 + progress * 20}deg)`;
+            }
+        } else {
+            // Desktop: horizontal bar under navbar
+            fill.style.height = '';
+            fill.style.width = `${pct}%`;
+            if (scissors) {
+                scissors.style.transform = `translateY(-50%) rotate(0deg)`;
+            }
+        }
+
+        ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateProgress);
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateProgress);
+    });
+
+    updateProgress();
+}
+
+// ═══════════════════════════════════════════════
+// MOBILE BOTTOM CTA BAR
+// ═══════════════════════════════════════════════
+function initMobileCTA() {
+    const bar = document.getElementById('mobileCTA');
+    if (!bar) return;
+
+    const mobileMedia = window.matchMedia('(max-width: 768px)');
+    if (!mobileMedia.matches) return;
+
+    let visible = false;
+
+    const update = () => {
+        const heroEnd = window.innerHeight * 0.85;
+        const contactEl = document.getElementById('contact');
+        const contactTop = contactEl
+            ? contactEl.getBoundingClientRect().top
+            : Infinity;
+
+        const shouldShow = window.scrollY > heroEnd && contactTop > window.innerHeight * 0.5;
+
+        if (shouldShow !== visible) {
+            visible = shouldShow;
+            bar.classList.toggle('is-visible', visible);
+        }
+    };
+
+    window.addEventListener('scroll', () => {
+        window.requestAnimationFrame(update);
+    }, { passive: true });
+
+    update();
+}
+
+// ═══════════════════════════════════════════════
+// STITCH DIVIDER ANIMATION
+// ═══════════════════════════════════════════════
+function initStitchDividers() {
+    const sections = document.querySelectorAll('section');
+    if (!sections.length) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (prefersReducedMotion.matches) {
+        sections.forEach(s => s.classList.add('stitch-visible'));
+        return;
+    }
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('stitch-visible');
+            }
+        });
+    }, {
+        threshold: 0.3,
+        rootMargin: '0px 0px -10% 0px'
+    });
+
+    sections.forEach(s => observer.observe(s));
+}
+
+// ═══════════════════════════════════════════════
+// PARALLAX GLOW ORBS (Hero section)
+// ═══════════════════════════════════════════════
+function initParallaxGlow() {
+    const glow = document.querySelector('.hero-glow');
+    if (!glow) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (prefersReducedMotion.matches) return;
+
+    let ticking = false;
+
+    const updateParallax = () => {
+        const scrollY = window.scrollY;
+        const heroHeight = document.querySelector('.hero')?.offsetHeight || 600;
+
+        if (scrollY < heroHeight) {
+            const offset = scrollY * 0.15;
+            glow.style.transform = `translateY(${offset}px)`;
+        }
+        ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateParallax);
+    }, { passive: true });
+}
+
+// ═══════════════════════════════════════════════
+// SUBTLE TILT EFFECT ON HERO CARD (desktop only)
+// ═══════════════════════════════════════════════
+function initCardTilt() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (prefersReducedMotion.matches) return;
+
+    const isMobile = window.matchMedia('(max-width: 768px)');
+    if (isMobile.matches) return;
+
+    const cards = document.querySelectorAll('.hero-card');
+    if (!cards.length) return;
+
+    cards.forEach(card => {
+        card.addEventListener('mousemove', event => {
+            const rect = card.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -2;
+            const rotateY = ((x - centerX) / centerX) * 2;
+
+            card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     initCurrentYear();
     initSmoothScroll();
@@ -756,4 +951,11 @@ window.addEventListener('DOMContentLoaded', () => {
     initReviewCarousel();
     const setRating = initStarRating();
     initReviewForm(setRating);
+
+    // New animations
+    initScrollProgress();
+    initMobileCTA();
+    initStitchDividers();
+    initParallaxGlow();
+    initCardTilt();
 });
