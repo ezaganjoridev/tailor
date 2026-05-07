@@ -786,6 +786,7 @@ function initScrollProgress() {
             fill.style.height = `${pct}%`;
             if (scissors) {
                 scissors.style.transform = `translateX(-50%) rotate(${90 + progress * 20}deg)`;
+                scissors.style.opacity = progress > 0.02 ? '1' : '0';
             }
         } else {
             // Desktop: horizontal bar under navbar
@@ -793,6 +794,7 @@ function initScrollProgress() {
             fill.style.width = `${pct}%`;
             if (scissors) {
                 scissors.style.transform = `translateY(-50%) rotate(0deg)`;
+                scissors.style.opacity = progress > 0.02 ? '1' : '0';
             }
         }
 
@@ -820,6 +822,13 @@ function initScrollProgress() {
 function initMobileCTA() {
     const bar = document.getElementById('mobileCTA');
     if (!bar) return;
+
+    const dismissButton = bar.querySelector('.mobile-cta-dismiss');
+    if (dismissButton) {
+        dismissButton.addEventListener('click', () => {
+            bar.classList.add('dismissed');
+        });
+    }
 
     const mobileMedia = window.matchMedia('(max-width: 768px)');
     if (!mobileMedia.matches) return;
